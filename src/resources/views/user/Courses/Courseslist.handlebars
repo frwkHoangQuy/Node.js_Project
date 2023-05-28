@@ -1,0 +1,142 @@
+<body>
+  <div class="container mt-4 mb-4">
+    <div class="row">
+      <div class="col-12 d-flex align-items-center justify-content-between">
+        <h1>Welcome to Your Website</h1>
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="checkAll">
+          <label class="custom-control-label" for="checkAll">Select All</label>
+        </div>
+      </div>
+      <p class="col-12">Discover amazing courses to enhance your skills.</p>
+    </div>
+
+    <div class="row course-list">
+      {{#each courses}}
+      <div class="col-12 col-md-4 mt-4">
+        <div class="card">
+          <div class="position-relative">
+            <a href="Mycourses/{{this.slug}}">
+              <img class="card-img-top img-fluid w-100" src="https://img.youtube.com/vi/{{this.image}}/0.jpg" alt="Course Image">
+            </a>
+            <div class="custom-control custom-checkbox position-absolute" style="top: 10px; right: 10px;">
+              <input type="checkbox" class="custom-control-input" id="{{this._id}}">
+              <label class="custom-control-label" for="{{this._id}}"></label>
+            </div>
+          </div>
+          <div class="card-body">
+            <a href="Mycourses/{{this.slug}}">
+              <h5 class="card-title">{{this.name}}</h5>
+            </a>
+            <p class="card-text">{{this.description}}</p>
+            <div class="d-flex justify-content-between">
+              <a href="Mycourses/{{this.slug}}" class="btn btn-primary">Go to Course</a>
+              <div class="ml-auto">
+                <a href="Mycourses/{{this._id}}/edit" class="btn btn-primary bg-white text-dark border-dark">Edit</a>
+                <a href="Mycourses/{{this._id}}/softdelete" class="btn btn-danger text-white mr-2">
+                  <i class="fas fa-trash-alt mr-1" style="background-color: red;"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-12 d-flex justify-content-end">
+        <a href="Mycourses/create" class="btn btn-primary create-course-btn">Create Course</a>
+        <a href="Mycourses/restore" class="btn btn-danger ml-2 restore-btn">
+          <div class="d-inline-flex align-items-center">
+            <i class="fas fa-trash-alt mr-1" style="background-color: red;"></i>
+            <div class="rounded-circle d-flex justify-content-center align-items-center ml-2"
+              style="width: 20px; height: 20px; background-color: #ffffff;">
+              <span class="text-center text-dark">{{count}}</span>
+            </div>
+          </div>
+        </a>
+         {{!-- href="Mycourses/deleteall" --}}
+        <button class="btn btn-danger ml-2 delete-all-btn d-none">
+          Delete 
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      let idList = []
+      $("#checkAll").click(function () {
+        $('input:checkbox').not(this).prop('checked', this.checked);
+        const checkboxEml = document.querySelectorAll(".custom-control-input:not([id='checkAll'])")
+
+      if(this.checked){
+        checkboxEml.forEach(eml => {
+          idList.push(eml.id)
+        })
+      }
+      else {
+        idList = []
+      }
+
+        console.log(idList)
+        toggleButtons();
+      });
+
+      $(".custom-control-input:not([id='checkAll'])").change(function () {
+        toggleButtons();
+        const id = this.getAttribute('id')
+        if(this.checked) {
+          idList.push(id)
+        }
+        else {
+          idList = idList.filter(itemId => itemId !== id )
+        }
+
+        console.log("idList", idList)
+        
+      });
+
+
+       function fetchData() {
+          fetch('http://localhost:3000/user/Mycourses/deleteselected', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(idList),
+          })
+            .then(response => response.json())
+            .then(data => {
+              window.location.reload()
+            })
+            .catch(error => {
+              console.error('Error calling API:', error);
+            });
+        }
+
+      
+
+      $('.delete-all-btn').click(async() => {
+        console.log(idList)
+
+        await fetchData()
+      })
+
+      function toggleButtons() {
+        if ($(".custom-control-input:checked").length > 0) {
+          $(".create-course-btn").hide();
+          $(".restore-btn").hide();
+          $(".delete-all-btn").removeClass('d-none');
+        } else {
+          $(".create-course-btn").show();
+          $(".restore-btn").show();
+          $(".delete-all-btn").addClass('d-none');
+        }
+      }
+
+    });
+  </script>
+</body>

@@ -1,0 +1,24 @@
+const express = require('express');
+const methodOverride = require('method-override');
+const hdbrs = require('express-handlebars');
+const morgan = require('morgan');
+const path = require('path');
+const app = express();
+const route = require('./routes');
+const db = require('./config/db');
+db.connect();
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+//app.use(morgan('combined'));
+app.use(methodOverride('_method'));
+app.engine('handlebars', hdbrs.engine());
+app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'resources', 'views'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+route(app);
+app.listen(3000, () => {
+  console.log('http://localhost:3000');
+});
+module.exports = app;

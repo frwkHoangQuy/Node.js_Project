@@ -1,0 +1,38 @@
+{
+  "singleQuote": true,
+  "overrides": [
+    {
+      "files": "*.handlebars",
+      "options": {
+        "singleQuote": false,
+        "printWidth": 120,
+        "tabWidth": 2,
+        "useTabs": false,
+        "trailingComma": "es5",
+        "htmlWhitespaceSensitivity": "ignore"
+      }
+    },
+    {
+      "files": "*.js",
+      "options": {
+        "trailingComma": "es5",
+        "tabWidth": 2,
+        "semi": true,
+        "singleQuote": true,
+        "printWidth": 120,
+        "arrowParens": "avoid"
+      }
+    },
+    {
+      "files": ".json",
+      "options": {
+        "tabWidth": 2,
+        "useTabs": false,
+        "semi": false,
+        "singleQuote": true,
+        "trailingComma": "none",
+        "printWidth": 120
+      }
+    }
+  ]
+}

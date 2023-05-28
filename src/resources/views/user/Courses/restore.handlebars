@@ -1,0 +1,126 @@
+<body>
+  <div class="container mt-4 mb-4">
+    <div class="row align-items-center justify-content-between mb-2">
+      <h1>Your Courses</h1>
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="checkAll">
+        <label class="custom-control-label" for="checkAll">Select All</label>
+      </div>
+    </div>
+    <div class="row">
+      {{#each courses}}
+      <div class="col-6 col-md-4 mt-4">
+        <div class="card">
+          <div class="position-relative">
+            <a href="/user/Mycourses/{{this.slug}}">
+              <img class="card-img-top img-fluid w-100" src="https://img.youtube.com/vi/{{this.image}}/0.jpg"
+                alt="Course Image">
+            </a>
+            <div class="custom-control custom-checkbox position-absolute" style="top: 10px; right: 10px;">
+              <input type="checkbox" class="custom-control-input course-checkbox" id="{{this._id}}">
+              <label class="custom-control-label" for="{{this._id}}"></label>
+            </div>
+          </div>
+          <div class="card-body">
+            <a href="/user/Mycourses/{{this.slug}}">
+              <h5 class="card-title">{{this.name}}</h5>
+            </a>
+            <p class="card-text">{{this.description}}</p>
+            <div class="d-flex justify-content-between">
+              <div class="ml-auto">
+                <a href="/user/Mycourses/restore/{{this._id}}/restored"
+                  class="btn btn-primary bg-white text-dark border-dark">Restore</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    <div class="row mt-4">
+      <div class="col-12 d-flex justify-content-end">
+        <a href="/user/Mycourses/restoreselected" class="btn btn-primary restore-all-btn d-none">Restore</a>
+        <p class="no-courses-message d-none">Không có khóa học nào bị xóa</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script>
+  $(document).ready(function () {
+    var idList = [];
+    var totalCourses = $('.card').length;
+
+    if (totalCourses === 0) {
+      $('.no-courses-message').removeClass('d-none');
+    }
+
+    $("#checkAll").click(function () {
+      $('.course-checkbox').prop('checked', this.checked);
+
+      const checkboxEml = document.querySelectorAll(".course-checkbox")
+
+      if(this.checked){
+        checkboxEml.forEach(eml => {
+          idList.push(eml.id)
+        })
+      }
+      else {
+        idList = []
+      }
+
+      console.log(idList)
+      toggleButtons();
+    });
+
+    $(".course-checkbox").change(function () {
+      toggleButtons();
+      const id = this.getAttribute('id')
+      if(this.checked) {
+        idList.push(id)
+      }
+      else {
+        idList = idList.filter(itemId => itemId !== id )
+      }
+
+      console.log("idList", idList)
+      
+    });
+
+    function restoreData() {
+      fetch('http://localhost:3000/user/Mycourses/restoreselected', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(idList),
+      })
+        .then(response => response.json())
+        .then(data => {
+          window.location.reload()
+        })
+        .catch(error => {
+          console.error('Error calling API:', error);
+        });
+    }
+
+    $('.restore-all-btn').off().click(async() => {
+      console.log(idList)
+
+      await restoreData()
+
+    })
+    
+    
+
+    function toggleButtons() {
+      if ($('.course-checkbox:checked').length > 0) {
+        $(".restore-all-btn").removeClass('d-none');
+      } else {
+        $(".restore-all-btn").addClass('d-none');
+      }
+    }
+  });
+</script>
+
+</body>

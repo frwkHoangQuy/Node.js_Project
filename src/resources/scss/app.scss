@@ -1,0 +1,11 @@
+@import 'src/resources/scss/_variables';
+h1 {
+  color: $black-color;
+}
+h2 {
+  color: green;
+}
+.navbarUserPart {
+  display: flex;
+  align-items: stretch;
+}

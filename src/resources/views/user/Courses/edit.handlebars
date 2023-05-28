@@ -1,0 +1,26 @@
+<div class="container update-course">
+  <h1>Cập nhật khóa học</h1>
+  <form method="POST" action="update?_method=PUT">
+    <div class="form-group">
+      <label for="name">Tên khóa học</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{course.name}}"
+        placeholder="Nhập tên khóa học">
+    </div>
+    <div class="form-group">
+      <label for="description">Mô tả</label>
+      <input type="text" class="form-control" id="description" name="description" value="{{course.description}}"
+        placeholder="Nhập mô tả">
+    </div>
+    <div class="form-group">
+      <label for="videoid">Video</label>
+      <input type="text" class="form-control" id="videoid" name="videoid" value="{{course.videoid}}"
+        placeholder="Nhập id video">
+    </div>
+    <div class="form-group">
+      <label for="level">Trình độ</label>
+      <input type="text" class="form-control" id="level" name="level" value="{{course.level}}"
+        placeholder="Nhập trình độ">
+    </div>
+    <button type="submit" class="btn btn-primary">Cập nhật</button>
+  </form>
+</div>
